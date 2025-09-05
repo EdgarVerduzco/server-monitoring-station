@@ -4,7 +4,12 @@
 ```markdown
 # 📡 TIVEG Concentrador SMS → JSON → API  
 
-> Firmware modular para **ESP32 + SIM800L** (TTGO T-Call / DualMCU ONE) que recibe SMS en formato PDU, los reconstruye, sanitiza y envía en **JSON** hacia una API HTTP/HTTPS.  
+_Firmware modular para **ESP32 + SIM800L** (TTGO T-Call / DualMCU ONE)._  
+Recibe SMS en formato **PDU**, los reconstruye, sanitiza y los envía en **JSON** hacia una API HTTP/HTTPS.  
+
+[![ESP32](https://img.shields.io/badge/ESP32-SIM800L-blue?logo=espressif)]() 
+[![Arduino](https://img.shields.io/badge/Arduino-Compatible-green?logo=arduino)]() 
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)]()
 
 ---
 
@@ -151,4 +156,5 @@ Ejemplo de log:
 | API no recibe datos | JSON mal formado           | Revisar sanitización y `API_URL` |
 | SIM se satura       | SMS corruptos sin limpiar  | Usar consola con `AT+CMGD`       |
 
+---
 
