@@ -48,12 +48,21 @@ tiveg_concentrador/
 El formato de datos JSON que utiliza el concentrador incluye los siguientes campos básicos:
 
 ```json
-{
-    "from": "+521234567890",     // Número de origen del SMS
-    "text": "{ 'cmd':'status' }", // Contenido del SMS (ya sanitizado)
-    "ts": "2025-09-05 12:33:21", // Marca de tiempo de recepción
-    "id": 31                     // Índice interno de mensaje en SIM antes de borrarse
-}
+{"t":"26.1",
+"id":"c049efbfe84c",
+"ts":"21.6",
+"v":"3.75",
+"c":"77.0",
+"rh":"19.5",
+"ph":"6.1",
+"b":"16.7",
+"ti":"27.5",
+"p":"58768.4",
+"l":"261.5",
+"h":"20.2",
+"tm":"7:00:51",
+"err":220,
+"d":"14/04/2027"}
 ````
 
 > **Nota:** Los SMS multipart se ensamblan automáticamente en un solo `text` antes de enviarse a la API.
@@ -132,6 +141,7 @@ y permite interactuar directamente con el SIM800L.
 | SMS no recibidos    | CNMI mal configurado       | Confirmar `AT+CNMI=2,1,0,0,0`    |
 | API no recibe datos | JSON mal formado           | Revisar sanitización y `API_URL` |
 | SIM se satura       | SMS corruptos sin limpiar  | Usar consola con `AT+CMGD`       |
+
 
 
 
