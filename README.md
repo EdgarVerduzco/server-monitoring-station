@@ -10,7 +10,7 @@
 </div>
 
 <div align="center">
-    <p><img src="resource/topologia.png" width="400px"></p>
+    <p><img src="resources/topologia.png" width="400px"></p>
     <br/>   
 </div>
 
@@ -132,6 +132,7 @@ y permite interactuar directamente con el SIM800L.
 | SMS no recibidos    | CNMI mal configurado       | Confirmar `AT+CNMI=2,1,0,0,0`    |
 | API no recibe datos | JSON mal formado           | Revisar sanitización y `API_URL` |
 | SIM se satura       | SMS corruptos sin limpiar  | Usar consola con `AT+CMGD`       |
+
 
 
 
