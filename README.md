@@ -1,11 +1,3 @@
-¡Genial! 🙌
-Aquí tienes el **README.md completo y pulido para GitHub**, ya con todo integrado:
-
-* Vista general, características, estructura de archivos.
-* Configuración (`secrets.h`, `config.h`).
-* Flujo del concentrador con imagen.
-* Modo consola con ejemplos.
-* Tablas para resumir comandos AT y problemas comunes.
 
 ---
 
@@ -158,4 +150,5 @@ Ejemplo de log:
 | SMS no recibidos    | CNMI mal configurado       | Confirmar `AT+CNMI=2,1,0,0,0`    |
 | API no recibe datos | JSON mal formado           | Revisar sanitización y `API_URL` |
 | SIM se satura       | SMS corruptos sin limpiar  | Usar consola con `AT+CMGD`       |
+
 
