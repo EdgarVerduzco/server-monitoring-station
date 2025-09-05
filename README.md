@@ -1,5 +1,4 @@
 
-```markdown
 # 📡 TIVEG Concentrador SMS → JSON → API  
 
 <div align="center">
@@ -19,22 +18,19 @@ Este proyecto contiene el firmware y documentación para el **Concentrador TIVEG
 
 ---
 
-## 📂 Estructura de Archivos
-
-La estructura del repositorio es la siguiente:
+## 📂 Estructura de Archivos  
 
 ```
-
-tiveg\_concentrador/
+tiveg_concentrador/
 ├── docs/                     # Documentación adicional
 ├── resources/                # Recursos gráficos (diagramas, imágenes)
 │   └── topologia.png
 ├── firmware/
 │   ├── main.ino              # Código principal (URCs, barridos, envío API)
 │   ├── config.h              # Selección de tarjeta, pines y parámetros globales
-│   ├── secrets.h             # Credenciales privadas (SSID, password, API\_URL)
-│   ├── wifi\_config.h         # Conexión y reconexión WiFi
-│   ├── http\_utils.h          # Manejo de HTTP/HTTPS con retries
+│   ├── secrets.h             # Credenciales privadas (SSID, password, API_URL)
+│   ├── wifi_config.h         # Conexión y reconexión WiFi
+│   ├── http_utils.h          # Manejo de HTTP/HTTPS con retries
 │   ├── JsonQueue.h           # Cola FIFO de mensajes JSON
 │   ├── SIM800SmsManager.h    # Clase para comandos AT y envío de SMS
 │   ├── SIM800SmsManager.cpp
@@ -43,8 +39,7 @@ tiveg\_concentrador/
 │   ├── SmsConcatManager.h    # Ensamblado de SMS multipartes
 │   └── SmsConcatManager.cpp
 └── README.md                 # Este archivo
-
-````
+```
 
 ---
 
@@ -137,4 +132,5 @@ y permite interactuar directamente con el SIM800L.
 | SMS no recibidos    | CNMI mal configurado       | Confirmar `AT+CNMI=2,1,0,0,0`    |
 | API no recibe datos | JSON mal formado           | Revisar sanitización y `API_URL` |
 | SIM se satura       | SMS corruptos sin limpiar  | Usar consola con `AT+CMGD`       |
+
 
