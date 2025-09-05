@@ -33,22 +33,26 @@ Recibe SMS en formato **PDU**, los reconstruye, sanitiza y los envía en **JSON*
 
 ## 📂 Estructura de Archivos  
 
-```
+```txt
+tiveg_concentrador/
+├── docs/                     # Documentación adicional
+├── resources/                # Recursos gráficos (diagramas, imágenes)
+│   └── topologia.png
+├── firmware/
+│   ├── main.ino              # Código principal (URCs, barridos, envío API)
+│   ├── config.h              # Selección de tarjeta, pines y parámetros globales
+│   ├── secrets.h             # Credenciales privadas (SSID, password, API_URL)
+│   ├── wifi_config.h         # Conexión y reconexión WiFi
+│   ├── http_utils.h          # Manejo de HTTP/HTTPS con retries
+│   ├── JsonQueue.h           # Cola FIFO de mensajes JSON
+│   ├── SIM800SmsManager.h    # Clase para comandos AT y envío de SMS
+│   ├── SIM800SmsManager.cpp
+│   ├── SmsPduParser.h        # Parser de PDU → texto
+│   ├── SmsPduParser.cpp
+│   ├── SmsConcatManager.h    # Ensamblado de SMS multipartes
+│   └── SmsConcatManager.cpp
+└── README.md                 # Este archivo
 
-├── main.ino              # Código principal (URCs, barridos, envío API)
-├── config.h              # Selección de tarjeta, pines y parámetros globales
-├── secrets.h             # Credenciales privadas (SSID, password, API\_URL)
-├── wifi\_config.h         # Conexión y reconexión WiFi
-├── http\_utils.h          # Manejo de HTTP/HTTPS con retries
-├── JsonQueue.h           # Cola FIFO de mensajes JSON
-├── SIM800SmsManager.h    # Clase para comandos AT y envío de SMS
-├── SIM800SmsManager.cpp
-├── SmsPduParser.h        # Parser de PDU → texto
-├── SmsPduParser.cpp
-├── SmsConcatManager.h    # Ensamblado de SMS multipartes
-├── SmsConcatManager.cpp
-
-````
 
 ---
 
@@ -157,4 +161,5 @@ Ejemplo de log:
 | SIM se satura       | SMS corruptos sin limpiar  | Usar consola con `AT+CMGD`       |
 
 ---
+
 
