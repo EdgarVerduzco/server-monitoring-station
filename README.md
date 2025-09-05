@@ -1,49 +1,40 @@
 
----
-
 ```markdown
 # 📡 TIVEG Concentrador SMS → JSON → API  
 
-_Firmware modular para **ESP32 + SIM800L** (TTGO T-Call / DualMCU ONE)._  
-Recibe SMS en formato **PDU**, los reconstruye, sanitiza y los envía en **JSON** hacia una API HTTP/HTTPS.  
+<div align="center">
+    <a href="#"><img src="https://img.shields.io/badge/version-1.0.0-blue.svg" alt="Version"></a>
+    <a href="#"><img src="https://img.shields.io/badge/platform-ESP32-green.svg" alt="ESP32"></a>
+    <a href="#"><img src="https://img.shields.io/badge/modem-SIM800L-orange.svg" alt="SIM800L"></a>
+    <a href="#"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="License"></a>
+    <br>
+</div>
 
-[![ESP32](https://img.shields.io/badge/ESP32-SIM800L-blue?logo=espressif)]() 
-[![Arduino](https://img.shields.io/badge/Arduino-Compatible-green?logo=arduino)]() 
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)]()
+<div align="center">
+    <p><img src="topologia.png" width="400px"></p>
+    <br/>   
+</div>
 
----
-
-## 🖼️ Vista General  
-
-![Concentrador TIVEG](topologia.png)
-
----
-
-## ✨ Características  
-
-- 📥 Recepción de SMS en **PDU/UDH**.  
-- 🧩 Ensamblado de mensajes largos con `SmsConcatManager`.  
-- 🧹 Limpieza automática de memoria SIM (`AT+CMGD`).  
-- 🗂️ Cola RAM (`JsonQueue`) para hasta **16 mensajes** pendientes.  
-- 🌐 Envío confiable de JSON a **API HTTP/HTTPS**.  
-- 🔄 Reconexión WiFi automática.  
-- 🖥️ Modo consola (`###`) para pruebas directas con comandos AT.  
+Este proyecto contiene el firmware y documentación para el **Concentrador TIVEG**, un sistema modular que recibe SMS en formato **PDU/UDH**, los reconstruye y sanitiza, y los envía como **JSON** hacia una API HTTP/HTTPS.
 
 ---
 
-## 📂 Estructura de Archivos  
+## 📂 Estructura de Archivos
 
-```txt
-tiveg_concentrador/
+La estructura del repositorio es la siguiente:
+
+```
+
+tiveg\_concentrador/
 ├── docs/                     # Documentación adicional
 ├── resources/                # Recursos gráficos (diagramas, imágenes)
 │   └── topologia.png
 ├── firmware/
 │   ├── main.ino              # Código principal (URCs, barridos, envío API)
 │   ├── config.h              # Selección de tarjeta, pines y parámetros globales
-│   ├── secrets.h             # Credenciales privadas (SSID, password, API_URL)
-│   ├── wifi_config.h         # Conexión y reconexión WiFi
-│   ├── http_utils.h          # Manejo de HTTP/HTTPS con retries
+│   ├── secrets.h             # Credenciales privadas (SSID, password, API\_URL)
+│   ├── wifi\_config.h         # Conexión y reconexión WiFi
+│   ├── http\_utils.h          # Manejo de HTTP/HTTPS con retries
 │   ├── JsonQueue.h           # Cola FIFO de mensajes JSON
 │   ├── SIM800SmsManager.h    # Clase para comandos AT y envío de SMS
 │   ├── SIM800SmsManager.cpp
@@ -53,21 +44,72 @@ tiveg_concentrador/
 │   └── SmsConcatManager.cpp
 └── README.md                 # Este archivo
 
+````
 
 ---
 
-## ⚙️ Configuración  
+## 📑 Estructura del JSON
 
-### 🔑 `secrets.h`  
+El formato de datos JSON que utiliza el concentrador incluye los siguientes campos básicos:
+
+```json
+{
+    "from": "+521234567890",     // Número de origen del SMS
+    "text": "{ 'cmd':'status' }", // Contenido del SMS (ya sanitizado)
+    "ts": "2025-09-05 12:33:21", // Marca de tiempo de recepción
+    "id": 31                     // Índice interno de mensaje en SIM antes de borrarse
+}
+````
+
+> **Nota:** Los SMS multipart se ensamblan automáticamente en un solo `text` antes de enviarse a la API.
+
+---
+
+## 🖥️ Modo Consola
+
+El concentrador cuenta con un **modo consola** para debug y comandos manuales.
+Se activa enviando:
+
+```
+###
+```
+
+y permite interactuar directamente con el SIM800L.
+
+### Ejemplo: SMS atascados por corrupción de multipartes
+
+```
+[SWEEP] Encontrado SMS idx=31 (status=1)
+[SWEEP] Encontrado SMS idx=32 (status=1)
+...
++CMGL: 31,1,"",156
++CMGL: 32,1,"",78
+```
+
+**Comandos útiles:**
+
+| Acción                 | Comando AT                     | Descripción                      |
+| ---------------------- | ------------------------------ | -------------------------------- |
+| Listar mensajes UNREAD | `AT+CMGL=0`                    | Muestra los SMS no leídos        |
+| Listar mensajes READ   | `AT+CMGL=1`                    | Muestra los SMS ya leídos        |
+| Borrar un mensaje      | `AT+CMGD=31`                   | Borra SMS en índice 31           |
+| Borrar varios          | `AT+CMGD=31` <br> `AT+CMGD=32` | Borra múltiples mensajes         |
+| Confirmar limpieza     | `AT+CMGL=1`                    | Verifica que los SMS ya no estén |
+
+---
+
+## ⚙️ Configuración rápida
+
+### `secrets.h`
 
 ```cpp
 #define WIFI_SSID     "MiRedWiFi"
 #define WIFI_PASSWORD "MiPassword"
 #define API_URL       "http://192.168.1.10:5000/api/data"
 #define MIRROR_URL    ""   // opcional
-````
+```
 
-### 🛠️ `config.h`
+### `config.h`
 
 ```cpp
 #define USE_BOARD 0       // 0 = TTGO T-Call, 1 = DualMCU ONE
@@ -78,76 +120,12 @@ tiveg_concentrador/
 
 ---
 
-## 🔄 Flujo del Concentrador
-
-El proceso interno del firmware:
-
-| Paso | Acción                                                      |
-| ---- | ----------------------------------------------------------- |
-| 1    | Conexión WiFi (autoreconexión incluida).                    |
-| 2    | Configuración del SIM800L (modo PDU, almacenamiento en ME). |
-| 3    | Recepción de SMS (URC `+CMTI`).                             |
-| 4    | Parseo de PDU → texto (`SmsPduParser`).                     |
-| 5    | Ensamblado de multipartes (`SmsConcatManager`).             |
-| 6    | Limpieza de los SMS procesados (`AT+CMGD`).                 |
-| 7    | Sanitización + push en cola (`JsonQueue`).                  |
-| 8    | Envío de JSON a API HTTP/HTTPS (`http_utils.h`).            |
-| 9    | Barrido periódico (`sweepMessages`).                        |
-
----
-
-### 🖼️ Diagrama de Flujo
-
-![Flujo del Concentrador](flujo.png)
-
----
-
-## 🖥️ Modo Consola – Manejo de SMS Atorados
-
-El modo consola se activa/desactiva escribiendo en el monitor serie:
-
-```
-###
-```
-
-Esto permite enviar **comandos AT manuales** al SIM800L y manejar mensajes atascados.
-
-### 📌 Problema típico
-
-* Un SMS multipart se corrompe y nunca llega completo.
-* El sistema muestra repetidamente índices (`idx=31`, `idx=32`) que no desaparecen.
-
-Ejemplo de log:
-
-```
-[SWEEP] Encontrado SMS idx=31 (status=1)
-[SWEEP] Encontrado SMS idx=32 (status=1)
-...
-+CMGL: 31,1,"",156
-...
-+CMGL: 32,1,"",78
-```
-
----
-
-### 🔧 Solución manual
-
-| Acción                 | Comando AT                     | Descripción                  |
-| ---------------------- | ------------------------------ | ---------------------------- |
-| Listar mensajes UNREAD | `AT+CMGL=0`                    | Muestra los no leídos        |
-| Listar mensajes READ   | `AT+CMGL=1`                    | Muestra los ya leídos        |
-| Borrar un mensaje      | `AT+CMGD=31`                   | Borra SMS en índice 31       |
-| Borrar varios          | `AT+CMGD=31` <br> `AT+CMGD=32` | Limpia mensajes uno a uno    |
-| Confirmar limpieza     | `AT+CMGL=1`                    | Verificar que ya no aparecen |
-
----
-
 ## 📝 Notas Importantes
 
 * ⚡ Fuente estable ≥ **2 A** para el SIM800L (picos altos).
 * 📶 Solo funciona en redes **2.4 GHz**.
 * ✅ En producción: `USE_HTTPS=1` y `HTTPS_INSECURE=0`.
-* 🧹 Los SMS se borran automáticamente después de procesarse, excepto los corruptos.
+* 🧹 Los SMS procesados se borran automáticamente de la memoria SIM.
 
 ---
 
@@ -159,7 +137,4 @@ Ejemplo de log:
 | SMS no recibidos    | CNMI mal configurado       | Confirmar `AT+CNMI=2,1,0,0,0`    |
 | API no recibe datos | JSON mal formado           | Revisar sanitización y `API_URL` |
 | SIM se satura       | SMS corruptos sin limpiar  | Usar consola con `AT+CMGD`       |
-
----
-
 
